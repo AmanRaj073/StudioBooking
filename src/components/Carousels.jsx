@@ -1,5 +1,6 @@
 import React from "react";
 import slider1 from "../assets/carousels/Slider1.jpg";
+import { Link } from "react-router-dom";
 
 const Carousels = () => {
   const sliderData = [
@@ -80,6 +81,7 @@ const Carousels = () => {
                     {slide.subHeading}
                   </p>
                   <div className="text-center">
+                    <Link to={'/booking'}>
                     <button
                       type="button"
                       className="btn btn-primary rounded-pill px-4 py-2"
@@ -91,6 +93,7 @@ const Carousels = () => {
                     >
                       {slide.buttonText}
                     </button>
+                    </Link>
                   </div>
                 </div>
               </div>

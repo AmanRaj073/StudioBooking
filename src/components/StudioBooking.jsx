@@ -7,8 +7,10 @@ import studio3 from "../assets/studio3.jpg";
 import studio4 from "../assets/studio4.jpg";
 import studio5 from "../assets/studio5.jpg";
 import studio6 from "../assets/studio6.jpg";
+import { Link, useNavigate } from "react-router-dom";
 
 const StudioBooking = () => {
+  const navigate = useNavigate()
   return (
     <div className="container-fluid px-3 px-md-5 py-3">
       {/* Header with back button */}
@@ -224,6 +226,7 @@ const StudioBooking = () => {
                 >
                   Cancel
                 </button>
+                {/* <Link to={'/checkout'}> */}
                 <button
                   type="button"
                   className="btn btn-primary rounded-pill px-4 py-2 flex-grow-1 flex-sm-grow-0"
@@ -231,9 +234,11 @@ const StudioBooking = () => {
                     fontSize: "clamp(1rem, 3vw, 1.25rem)",
                     minWidth: "150px",
                   }}
+                  onClick={()=>navigate('/checkout')}
                 >
                   Confirm & Pay
                 </button>
+                {/* </Link> */}
               </div>
             </div>
           </div>

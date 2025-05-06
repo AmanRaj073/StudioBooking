@@ -1,7 +1,9 @@
 import React from "react";
 import studio1 from "../assets/studio1.jpg";
 import paymentgateway from "../assets/paymentGateway.png";
+import { Link, useNavigate } from "react-router-dom";
 const Checkout = () => {
+  const navigate = useNavigate()
   return (
     <div className="container py-4">
       {/* Heading */}
@@ -203,9 +205,11 @@ const Checkout = () => {
               </div>
 
               <div className="d-grid">
-                <button className="btn btn-primary" type="button">
+                {/* <Link to={'/profile'}> */}
+                <button className="btn btn-primary" onClick={()=>navigate("/profile")} type="button">
                   Pay Now
                 </button>
+                {/* </Link> */}
               </div>
             </div>
           </div>
