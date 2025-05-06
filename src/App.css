@@ -1,38 +1,89 @@
-.App {
-  text-align: center;
-}
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+/* Carousel */
+@media (max-width: 576px) {
+    .carousel-caption {
+      top: 40%;
+      width: 90%;
+    }
   }
+/* End - Carousel */
+
+/* Footer */
+.social-icons a {
+  color: #6b7280; /* Default gray color */
+  transition: color 0.2s ease;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.social-icons a:hover {
+  color: #000; /* Black on hover - change to your brand colors */
+}
+
+/* Specific platform colors on hover (optional) */
+.social-icons a:hover:nth-child(1) { color: #000; } /* X/Twitter */
+.social-icons a:hover:nth-child(2) { color: #E1306C; } /* Instagram */
+.social-icons a:hover:nth-child(3) { color: #FF0000; } /* YouTube */
+.social-icons a:hover:nth-child(4) { color: #0A66C2; } /* LinkedIn */
+/* End - Footer */
+
+/* Hero/Upcoming New Update */
+.object-fit-cover {
+  object-fit: cover;
+}
+
+.hero-container {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.152), rgba(0, 0, 0, 0.223)), 
+                    url('./assets/NewFeatuesBg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 50vh;
+  padding: 4rem 2rem;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.feature-announcement {
+  max-width: 600px;
+  padding: 2.5rem;
+  border-radius: 10px;
+  background-color: rgba(33, 37, 41, 0.423); /* Darker semi-transparent background */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(5px);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.divider {
+  height: 2px;
+  background-color: rgba(255, 255, 255, 0.2);
+  margin: 1.5rem 0;
+}
+
+.btn-waitlist {
+  margin-right: 10px;
+  font-size: clamp(1rem, 3vw, 1.25rem);
+  min-width: 150px;
+  white-space: nowrap;
+}
+
+.h1s {
+  color: white;
+  font-size: 2.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .hero-container {
+    min-height: 60vh;
+    padding: 2rem 1rem;
   }
-  to {
-    transform: rotate(360deg);
+  
+  .feature-announcement {
+    padding: 1.5rem;
+  }
+  
+  .h1s {
+    font-size: 2rem;
   }
 }
