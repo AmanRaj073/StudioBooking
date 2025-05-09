@@ -4,14 +4,14 @@ import about1 from '../assets/aboutUs/about1.png';
 const AboutUs = () => {
   return (
     <section className="container py-5 my-lg-4">
-      <div className="row flex-column-reverse flex-lg-row g-4 g-lg-5 align-items-center">
+      <div className="row  flex-lg-row g-4 g-lg-5 align-items-center">
         {/* Content Section */}
         <div className="col-lg-6">
           <div className="pe-lg-4">
             <h2 className="fw-bold mb-4 display-4" style={{ color: '#212529' }}>
               About Us
             </h2>
-            <p className=" mb-4" style={{ color: '#495057', fontSize: '1.25rem' }}>
+            <p className=" mb-4" style={{ color: '#495057', fontSize: '1.2rem' }}>
               Your Studio Booking Platform makes studio booking simple and hassle-free for photographers, filmmakers, and content creators. Our mission is to provide top-quality spaces with flexible booking options, so you can focus on creating.
             </p>
             
@@ -33,7 +33,7 @@ const AboutUs = () => {
                   >
                     <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"/>
                   </svg>
-                  <p className="mb-0 fs-5" style={{ color: '#212529' }}>{feature}</p>
+                  <p className="mb-0 fs-6" style={{ color: '#212529' }}>{feature}</p>
                 </div>
               ))}
             </div>
