@@ -3,7 +3,7 @@ import studio1 from "../assets/studio1.jpg";
 import paymentgateway from "../assets/paymentGateway.png";
 import { Link, useNavigate } from "react-router-dom";
 const Checkout = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   return (
     <div className="container py-4">
       {/* Heading */}
@@ -66,31 +66,64 @@ const Checkout = () => {
                     </div>
                   </div>
 
-                  <div className="d-flex flex-wrap mt-3">
-                    <div className="me-4 mb-3 text-center">
-                      <i className="bi bi-camera2 fs-6 d-block mb-1"></i>
+                  <div className="d-none d-md-flex justify-content-between text-center mt-3">
+                    <div>
+                      <i className="bi bi-camera2 d-block mb-1"></i>
                       <div className="text-muted small">Setup</div>
-                      <div className="fw-bold text-primary">2</div>
+                      <div className="text-primary">2</div>
                     </div>
-                    <div className="me-4 mb-3 text-center">
-                      <i className="bi bi-arrows-fullscreen fs-6 d-block mb-1"></i>
+                    <div>
+                      <i className="bi bi-arrows-fullscreen d-block mb-1"></i>
                       <div className="text-muted small">Area</div>
-                      <div className="fw-bold text-primary">120 m²</div>
+                      <div className="text-primary">120 m²</div>
                     </div>
-                    <div className="me-4 mb-3 text-center">
-                      <i className="bi bi-people fs-6 d-block mb-1"></i>
+                    <div>
+                      <i className="bi bi-people d-block mb-1"></i>
                       <div className="text-muted small">Capacity</div>
-                      <div className="fw-bold  text-primary">15 people</div>
+                      <div className="text-primary">15 people</div>
                     </div>
-                    <div className="me-4 mb-3 text-center">
-                      <i className="bi bi-person-fill fs-6 d-block mb-1"></i>
+                    <div>
+                      <i className="bi bi-person-fill d-block mb-1"></i>
                       <div className="text-muted small">Restrooms</div>
-                      <div className="fw-bold text-primary">2</div>
+                      <div className="text-primary">2</div>
                     </div>
-                    <div className="mb-3 text-center">
-                      <i className="bi bi-sliders fs-6 d-block mb-1"></i>
+                    <div>
+                      <i className="bi bi-sliders d-block mb-1"></i>
                       <div className="text-muted small">Soundproof</div>
-                      <div className="fw-bold text-success">Yes</div>
+                      <div className="text-success">Yes</div>
+                    </div>
+                  </div>
+
+                  <div className="d-block d-md-none mt-3">
+                    <div className="d-flex justify-content-between mb-2">
+                      <span>
+                        <i className="bi bi-camera2 me-2"></i>Setup
+                      </span>
+                      <span className="text-primary">2</span>
+                    </div>
+                    <div className="d-flex justify-content-between mb-2">
+                      <span>
+                        <i className="bi bi-arrows-fullscreen me-2"></i>Area
+                      </span>
+                      <span className="text-primary">120 m²</span>
+                    </div>
+                    <div className="d-flex justify-content-between mb-2">
+                      <span>
+                        <i className="bi bi-people me-2"></i>Capacity
+                      </span>
+                      <span className="text-primary">15 people</span>
+                    </div>
+                    <div className="d-flex justify-content-between mb-2">
+                      <span>
+                        <i className="bi bi-person-fill me-2"></i>Restrooms
+                      </span>
+                      <span className="text-primary">2</span>
+                    </div>
+                    <div className="d-flex justify-content-between mb-2">
+                      <span>
+                        <i className="bi bi-sliders me-2"></i>Soundproof
+                      </span>
+                      <span className="text-success">Yes</span>
                     </div>
                   </div>
                 </div>
@@ -206,7 +239,11 @@ const Checkout = () => {
 
               <div className="d-grid">
                 {/* <Link to={'/profile'}> */}
-                <button className="btn btn-primary" onClick={()=>navigate("/profile")} type="button">
+                <button
+                  className="btn btn-primary"
+                  onClick={() => navigate("/profile")}
+                  type="button"
+                >
                   Pay Now
                 </button>
                 {/* </Link> */}
