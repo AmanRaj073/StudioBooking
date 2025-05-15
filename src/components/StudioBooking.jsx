@@ -1,27 +1,32 @@
 import React, { useState, useEffect } from "react";
-import { MapPin, Camera, Calendar, Clock, AlertCircle, ChevronLeft, ChevronRight } from "lucide-react";
-import icon4 from "../assets/icons/ChevronRight.svg";
-import studio1 from "../assets/studio1.jpg";
-import studio2 from "../assets/studio2.jpg";
-import studio3 from "../assets/studio3.jpg";
-import studio4 from "../assets/studio4.jpg";
-import studio5 from "../assets/studio5.jpg";
-import studio6 from "../assets/studio6.jpg";
+import {
+  MapPin,
+  Camera,
+  Calendar,
+  Clock,
+  AlertCircle,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import StudioInfo from "./StudioInfo";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 // Mock data for booked time slots
 const MOCK_BOOKED_SLOTS = {
   // Format: "YYYY-MM-DD": ["HH:MM", "HH:MM"]
-  "2025-05-10": ["09:00", "10:00", "14:00", "15:00"],
-  "2025-05-11": ["11:00", "12:00", "16:00"],
-  "2025-05-12": ["09:00", "10:00", "11:00", "12:00"],
-  "2025-05-15": ["14:00", "15:00", "16:00"],
+  "2025-05-10": ["9AM - 9PM", "2PM - 2AM"],
+  "2025-05-11": ["7AM - 7PM", "2PM - 2AM"],
+  "2025-05-12": ["7AM - 7PM", "9AM - 9PM", "2PM - 2AM"],
+  "2025-05-15": ["7AM - 7PM", "9AM - 9PM"],
 };
 
 // Available time slots
 const TIME_SLOTS = [
-  "09:00", "10:00", "11:00", "12:00", "13:00", 
-  "14:00", "15:00", "16:00", "17:00", "18:00"
+  "7AM - 7PM",
+  "9AM - 9PM",
+  "2PM - 2AM"
 ];
 
 const StudioBooking = () => {
@@ -29,24 +34,23 @@ const StudioBooking = () => {
   const [formData, setFormData] = useState({
     date: "",
     time: "",
-    shootingDays: "00",
-    preSetupDays: "00",
-    dismantalDays: "00",
+    shootingDays: "0",
+    preSetupDays: "1",
+    dismantalDays: "1",
     additionalNote: "",
-    firstName: "",
-    lastName: "",
+    productionName: "",
+    personName: "",
     phoneNumber: "",
     emailAddress: "",
     gst: "",
     gstFile: null,
     govId: "",
-    govIdFile: null
+    govIdFile: null,
   });
-  
+
+  const [selectedDateObj, setSelectedDateObj] = useState(null);
   const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
   const [formErrors, setFormErrors] = useState({});
-  const [showCalendar, setShowCalendar] = useState(false);
-  const [currentMonth, setCurrentMonth] = useState(new Date());
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
 
@@ -54,36 +58,28 @@ const StudioBooking = () => {
   useEffect(() => {
     if (formData.date) {
       const bookedSlots = MOCK_BOOKED_SLOTS[formData.date] || [];
-      const available = TIME_SLOTS.filter(slot => !bookedSlots.includes(slot));
+      const available = TIME_SLOTS.filter(
+        (slot) => !bookedSlots.includes(slot)
+      );
       setAvailableTimeSlots(available);
-      
+
       // If current selected time is no longer available, reset it
       if (formData.time && !available.includes(formData.time)) {
-        setFormData(prev => ({ ...prev, time: "" }));
+        setFormData((prev) => ({ ...prev, time: "" }));
       }
     } else {
       setAvailableTimeSlots([]);
     }
   }, [formData.date]);
 
-  // Format time for display
-  const formatTimeDisplay = (timeString) => {
-    if (!timeString) return "";
-    const [hours, minutes] = timeString.split(":");
-    const hour = parseInt(hours, 10);
-    const period = hour >= 12 ? "PM" : "AM";
-    const displayHour = hour > 12 ? hour - 12 : hour === 0 ? 12 : hour;
-    return `${displayHour}:${minutes} ${period}`;
-  };
-
   // Handle input changes
   const handleInputChange = (e) => {
     const { id, value } = e.target;
-    setFormData(prev => ({ ...prev, [id]: value }));
-    
+    setFormData((prev) => ({ ...prev, [id]: value }));
+
     // Clear error when field is modified
     if (formErrors[id]) {
-      setFormErrors(prev => ({ ...prev, [id]: null }));
+      setFormErrors((prev) => ({ ...prev, [id]: null }));
     }
   };
 
@@ -91,71 +87,76 @@ const StudioBooking = () => {
   const handleFileChange = (e) => {
     const { id, files } = e.target;
     const fileKey = id === "gstUpload" ? "gstFile" : "govIdFile";
-    
+
     if (files && files[0]) {
-      setFormData(prev => ({ ...prev, [fileKey]: files[0] }));
-      
+      setFormData((prev) => ({ ...prev, [fileKey]: files[0] }));
+
       // Clear error when field is modified
       if (formErrors[fileKey]) {
-        setFormErrors(prev => ({ ...prev, [fileKey]: null }));
+        setFormErrors((prev) => ({ ...prev, [fileKey]: null }));
       }
     }
   };
 
-  // Calendar navigation
-  const goToPreviousMonth = () => {
-    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1));
-  };
+  // Handle date change from DatePicker
+  const handleDateChange = (date) => {
+    if (date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      const formattedDate = `${year}-${month}-${day}`;
 
-  const goToNextMonth = () => {
-    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1));
-  };
+      setSelectedDateObj(date);
+      setFormData((prev) => ({ ...prev, date: formattedDate }));
 
-  // Select date from calendar
-  const selectDate = (day) => {
-    const year = currentMonth.getFullYear();
-    const month = currentMonth.getMonth() + 1;
-    const formattedMonth = month < 10 ? `0${month}` : month;
-    const formattedDay = day < 10 ? `0${day}` : day;
-    
-    const selectedDate = `${year}-${formattedMonth}-${formattedDay}`;
-    setFormData(prev => ({ ...prev, date: selectedDate }));
-    setShowCalendar(false);
+      // Clear date error if it exists
+      if (formErrors.date) {
+        setFormErrors((prev) => ({ ...prev, date: null }));
+      }
+    } else {
+      setSelectedDateObj(null);
+      setFormData((prev) => ({ ...prev, date: "" }));
+    }
   };
 
   // Select time slot
   const selectTimeSlot = (time) => {
-    setFormData(prev => ({ ...prev, time }));
+    setFormData((prev) => ({ ...prev, time }));
+
+    // Clear time error if it exists
+    if (formErrors.time) {
+      setFormErrors((prev) => ({ ...prev, time: null }));
+    }
   };
 
   // Validate form
   const validateForm = () => {
     const errors = {};
     const requiredFields = [
-      { field: 'date', label: 'Date' },
-      { field: 'time', label: 'Time' },
-      { field: 'firstName', label: 'First Name' },
-      { field: 'lastName', label: 'Last Name' },
-      { field: 'phoneNumber', label: 'Phone Number' },
-      { field: 'emailAddress', label: 'Email Address' }
+      { field: "date", label: "Date" },
+      { field: "time", label: "Time" },
+      { field: "productionName", label: "Production Name" },
+      { field: "personName", label: "Contact Name" },
+      { field: "phoneNumber", label: "Phone Number" },
+      { field: "emailAddress", label: "Email Address" },
     ];
-    
+
     requiredFields.forEach(({ field, label }) => {
       if (!formData[field]) {
         errors[field] = `${label} is required`;
       }
     });
-    
+
     // Email validation
     if (formData.emailAddress && !/\S+@\S+\.\S+/.test(formData.emailAddress)) {
-      errors.emailAddress = 'Email is invalid';
+      errors.emailAddress = "Email is invalid";
     }
-    
+
     // Phone number validation
     if (formData.phoneNumber && !/^\d{10}$/.test(formData.phoneNumber)) {
-      errors.phoneNumber = 'Phone number must be 10 digits';
+      errors.phoneNumber = "Phone number must be 10 digits";
     }
-    
+
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -163,142 +164,85 @@ const StudioBooking = () => {
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     if (validateForm()) {
       setIsSubmitting(true);
-      
+
       // Simulate API call with timeout
       setTimeout(() => {
         console.log("Form submitted:", formData);
         setIsSubmitting(false);
         setFormSubmitted(true);
-        
+
         // Navigate to checkout after small delay
         setTimeout(() => {
-          navigate('/checkout');
+          navigate("/checkout");
         }, 1000);
       }, 1500);
     } else {
       // Scroll to first error
       const firstErrorField = Object.keys(formErrors)[0];
-      document.getElementById(firstErrorField)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      document
+        .getElementById(firstErrorField)
+        ?.scrollIntoView({ behavior: "smooth", block: "center" });
     }
   };
 
-  // Render improved calendar for date selection
-  const renderCalendar = () => {
-    const year = currentMonth.getFullYear();
-    const month = currentMonth.getMonth();
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const firstDayOfMonth = new Date(year, month, 1).getDay();
-    
-    const monthNames = [
-      "January", "February", "March", "April", "May", "June",
-      "July", "August", "September", "October", "November", "December"
-    ];
-    
-    const dayNames = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
-    
-    // Get today's date for comparison
-    const today = new Date();
-    const currentDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-    
-    const days = [];
-    for (let i = 0; i < firstDayOfMonth; i++) {
-      days.push(<div key={`empty-${i}`} className="p-1"></div>);
-    }
-    
-    for (let day = 1; day <= daysInMonth; day++) {
-      const date = new Date(year, month, day);
-      const dateString = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-      const isToday = date.getTime() === currentDate.getTime();
-      const isPast = date < currentDate;
-      const isSelected = dateString === formData.date;
-      const hasBookings = MOCK_BOOKED_SLOTS[dateString] && MOCK_BOOKED_SLOTS[dateString].length > 0;
-      const isFullyBooked = hasBookings && MOCK_BOOKED_SLOTS[dateString].length === TIME_SLOTS.length;
-      
-      days.push(
-        <div 
-          key={`day-${day}`} 
-          className={`p-1`}
-        >
-          <div
-            className={`rounded-lg flex flex-col items-center justify-center py-2 cursor-pointer
-                      ${isPast ? 'opacity-50 bg-light text-muted' : ''} 
-                      ${isToday ? 'border border-primary' : ''} 
-                      ${isSelected ? 'bg-primary text-white' : ''}
-                      ${hasBookings && !isFullyBooked && !isSelected ? 'bg-warning bg-opacity-25' : ''}
-                      ${isFullyBooked && !isSelected ? 'bg-danger bg-opacity-25' : ''}`}
-            onClick={() => !isPast && selectDate(day)}
-          >
-            <div className="font-bold">{day}</div>
-            {hasBookings && !isFullyBooked && !isSelected && (
-              <small className="d-block text-muted">{TIME_SLOTS.length - MOCK_BOOKED_SLOTS[dateString].length} slots</small>
-            )}
-            {isFullyBooked && !isSelected && (
-              <small className="d-block text-danger">Booked</small>
-            )}
-          </div>
-        </div>
-      );
-    }
-    
-    return (
-      <div className="calendar bg-white shadow rounded p-3 position-absolute top-100 start-0 mt-1 z-3" style={{ width: "320px" }}>
-        <div className="d-flex justify-content-between align-items-center mb-3">
-          <button 
-            type="button"
-            className="btn btn-sm btn-link text-dark p-0"
-            onClick={goToPreviousMonth}
-          >
-            <ChevronLeft size={20} />
-          </button>
-          <div className="fw-bold fs-5">{monthNames[month]} {year}</div>
-          <button
-            type="button"
-            className="btn btn-sm btn-link text-dark p-0"
-            onClick={goToNextMonth}
-          >
-            <ChevronRight size={20} />
-          </button>
-        </div>
-        <div className="d-grid" style={{ gridTemplateColumns: "repeat(7, 1fr)" }}>
-          {dayNames.map(day => (
-            <div key={day} className="text-center mb-2 fw-medium text-muted fs-6">{day}</div>
-          ))}
-          {days}
-        </div>
-        <div className="mt-3 border-top pt-2">
-          <div className="d-flex align-items-center mb-1">
-            <div className="me-2 rounded bg-warning bg-opacity-25" style={{ width: "12px", height: "12px" }}></div>
-            <small>Partially booked</small>
-          </div>
-          <div className="d-flex align-items-center">
-            <div className="me-2 rounded bg-danger bg-opacity-25" style={{ width: "12px", height: "12px" }}></div>
-            <small>Fully booked</small>
-          </div>
-        </div>
-      </div>
-    );
+  // Custom DatePicker styling
+  const datePickerCustomStyles = {
+    className: `form-control ${formErrors.date ? "is-invalid" : ""}`,
+    placeholderText: "Select a date",
+    id: "date",
+  };
+
+  // Custom date highlighter for DatePicker
+  const highlightWithAvailability = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const dateString = `${year}-${month}-${day}`;
+
+    const hasBookings =
+      MOCK_BOOKED_SLOTS[dateString] && MOCK_BOOKED_SLOTS[dateString].length > 0;
+    const isFullyBooked =
+      hasBookings && MOCK_BOOKED_SLOTS[dateString].length === TIME_SLOTS.length;
+
+    return isFullyBooked
+      ? "fully-booked-date"
+      : hasBookings
+      ? "partially-booked-date"
+      : "";
+  };
+
+  // Format date for display
+  const formatDateDisplay = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { 
+      weekday: 'short', 
+      month: 'short', 
+      day: 'numeric', 
+      year: 'numeric' 
+    });
   };
 
   // Render improved time slots
   const renderTimeSlots = () => {
     if (!formData.date || availableTimeSlots.length === 0) return null;
-    
+
     return (
       <div className="d-flex flex-wrap gap-2 mt-2">
-        {availableTimeSlots.map(slot => (
+        {availableTimeSlots.map((slot) => (
           <button
             key={slot}
             type="button"
-            className={`btn ${formData.time === slot 
-                    ? 'btn-primary' 
-                    : 'btn-outline-secondary'} rounded-pill px-3 py-1`}
+            className={`btn ${
+              formData.time === slot ? "btn-primary" : "btn-outline-secondary"
+            } rounded-pill px-3 py-1`}
             onClick={() => selectTimeSlot(slot)}
           >
             <Clock size={14} className="me-1" />
-            {formatTimeDisplay(slot)}
+            {slot}
           </button>
         ))}
       </div>
@@ -310,12 +254,7 @@ const StudioBooking = () => {
       {/* Header with back button */}
       <div className="d-flex align-items-center mb-3">
         <button className="btn btn-link p-0 me-2">
-          <img
-            src={icon4}
-            alt="Back"
-            width="24"
-            style={{ opacity: 1, transform: "rotate(-180deg)" }}
-          />
+          <ChevronLeft size={24} opacity={1} />
         </button>
         <h3 className="mb-0">Information Page</h3>
       </div>
@@ -327,34 +266,37 @@ const StudioBooking = () => {
             <div className="card-body">
               <h4 className="mb-4">Booking Details</h4>
               <form onSubmit={handleSubmit}>
-                {/* Date Input - IMPROVED */}
-                <div className="mb-3 position-relative">
+                {/* Date Input - Using React DatePicker */}
+                <div className="mb-3">
                   <label htmlFor="date" className="form-label fw-medium">
                     Date <span className="text-danger">*</span>
                   </label>
-                  <div className="input-group">
-                    <input
-                      type="text"
-                      className={`form-control ${formErrors.date ? 'is-invalid' : ''}`}
-                      id="date"
-                      placeholder="YYYY-MM-DD"
-                      value={formData.date}
-                      onChange={handleInputChange}
-                      onClick={() => setShowCalendar(!showCalendar)}
-                      readOnly
+                  <div className="position-relative">
+                    <DatePicker
+                      selected={selectedDateObj}
+                      onChange={handleDateChange}
+                      minDate={new Date()}
+                      dayClassName={highlightWithAvailability}
+                      {...datePickerCustomStyles}
                     />
-                    <span 
-                      className="input-group-text cursor-pointer" 
-                      onClick={() => setShowCalendar(!showCalendar)}
-                      style={{ cursor: 'pointer' }}
-                    >
-                      <Calendar size={20} />
-                    </span>
+                    <div className="calendar-icon">
+                      <Calendar size={18} className="text-muted" />
+                    </div>
                     {formErrors.date && (
-                      <div className="invalid-feedback">{formErrors.date}</div>
+                      <div
+                        className="invalid-feedback"
+                        style={{ display: "block" }}
+                      >
+                        {formErrors.date}
+                      </div>
                     )}
                   </div>
-                  {showCalendar && renderCalendar()}
+                  
+                  {selectedDateObj && (
+                    <div className="mt-2 small text-muted">
+                      Selected: {formatDateDisplay(formData.date)}
+                    </div>
+                  )}
                 </div>
 
                 {/* Time Input - IMPROVED */}
@@ -362,7 +304,7 @@ const StudioBooking = () => {
                   <label htmlFor="time" className="form-label fw-medium">
                     Time <span className="text-danger">*</span>
                   </label>
-                  
+
                   {formData.date ? (
                     <div>
                       {availableTimeSlots.length > 0 ? (
@@ -370,13 +312,20 @@ const StudioBooking = () => {
                           {formData.time && (
                             <div className="mb-2 p-2 bg-light rounded border d-flex justify-content-between align-items-center">
                               <div className="d-flex align-items-center">
-                                <Clock size={18} className="text-primary me-2" />
-                                <span className="fw-medium">{formatTimeDisplay(formData.time)}</span>
+                                <Clock
+                                  size={18}
+                                  className="text-primary me-2"
+                                />
+                                <span className="fw-medium">
+                                  {formData.time}
+                                </span>
                               </div>
-                              <button 
+                              <button
                                 type="button"
                                 className="btn btn-sm text-primary"
-                                onClick={() => setFormData(prev => ({ ...prev, time: "" }))}
+                                onClick={() =>
+                                  setFormData((prev) => ({ ...prev, time: "" }))
+                                }
                               >
                                 Change
                               </button>
@@ -384,15 +333,20 @@ const StudioBooking = () => {
                           )}
 
                           {!formData.time && renderTimeSlots()}
-                          
+
                           {formErrors.time && (
-                            <div className="text-danger mt-1 small">{formErrors.time}</div>
+                            <div className="text-danger mt-1 small">
+                              {formErrors.time}
+                            </div>
                           )}
                         </div>
                       ) : (
                         <div className="p-3 bg-danger bg-opacity-10 rounded text-danger d-flex align-items-center">
                           <AlertCircle size={18} className="me-2" />
-                          <span>All slots booked for this date. Please select another date.</span>
+                          <span>
+                            All slots booked for this date. Please select
+                            another date.
+                          </span>
                         </div>
                       )}
                     </div>
@@ -406,59 +360,70 @@ const StudioBooking = () => {
 
                 {/* Shooting Days */}
                 <div className="mb-3">
-                  <label htmlFor="shootingDays" className="form-label fw-medium">
+                  <label
+                    htmlFor="shootingDays"
+                    className="form-label fw-medium"
+                  >
                     Shooting days
                   </label>
-                  <select 
-                    className="form-select" 
+                  <select
+                    className="form-select"
                     id="shootingDays"
                     value={formData.shootingDays}
                     onChange={handleInputChange}
                   >
-                    <option value="00">00</option>
-                    <option value="01">01</option>
-                    <option value="02">02</option>
-                    <option value="03">03</option>
+                    {Array.from({ length: 16 }, (_, i) => (
+                      <option key={i} value={i.toString()}>
+                        {i}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
                 {/* Pre Setup Days */}
                 <div className="mb-3">
-                  <label htmlFor="preSetupDays" className="form-label fw-medium">
+                  <label
+                    htmlFor="preSetupDays"
+                    className="form-label fw-medium"
+                  >
                     Pre setup days
                   </label>
-                  <select 
-                    className="form-select" 
+                  <select
+                    className="form-select"
                     id="preSetupDays"
                     value={formData.preSetupDays}
                     onChange={handleInputChange}
+                    disabled
                   >
-                    <option value="00">00</option>
-                    <option value="01">01</option>
-                    <option value="02">02</option>
+                    <option value="1">1 Day only</option>
                   </select>
                 </div>
 
                 {/* Dismantle Days */}
                 <div className="mb-3">
-                  <label htmlFor="dismantalDays" className="form-label fw-medium">
+                  <label
+                    htmlFor="dismantalDays"
+                    className="form-label fw-medium"
+                  >
                     Dismantle days
                   </label>
-                  <select 
-                    className="form-select" 
+                  <select
+                    className="form-select"
                     id="dismantalDays"
                     value={formData.dismantalDays}
                     onChange={handleInputChange}
+                    disabled
                   >
-                    <option value="00">00</option>
-                    <option value="01">01</option>
-                    <option value="02">02</option>
+                    <option value="1">1 Day only</option>
                   </select>
                 </div>
 
                 {/* Additional Note */}
                 <div className="mb-4">
-                  <label htmlFor="additionalNote" className="form-label fw-medium">
+                  <label
+                    htmlFor="additionalNote"
+                    className="form-label fw-medium"
+                  >
                     Additional note
                   </label>
                   <textarea
@@ -472,41 +437,49 @@ const StudioBooking = () => {
                 </div>
 
                 {/* Personal Information Section */}
-                <h2 className="fw-bold mb-3">Your Information</h2>
+                <h5 className="fw-bold mb-3">Your Information</h5>
 
-                {/* First Name */}
+                {/* Production Name */}
                 <div className="mb-3">
-                  <label htmlFor="firstName" className="form-label fw-medium">
-                    First Name <span className="text-danger">*</span>
+                  <label htmlFor="productionName" className="form-label fw-medium">
+                    Production House <span className="text-danger">*</span>
                   </label>
                   <input
                     type="text"
-                    className={`form-control ${formErrors.firstName ? 'is-invalid' : ''}`}
-                    id="firstName"
-                    placeholder="First Name"
-                    value={formData.firstName}
+                    className={`form-control ${
+                      formErrors.productionName ? "is-invalid" : ""
+                    }`}
+                    id="productionName"
+                    placeholder="Production Name"
+                    value={formData.productionName}
                     onChange={handleInputChange}
                   />
-                  {formErrors.firstName && (
-                    <div className="invalid-feedback">{formErrors.firstName}</div>
+                  {formErrors.productionName && (
+                    <div className="invalid-feedback">
+                      {formErrors.productionName}
+                    </div>
                   )}
                 </div>
 
-                {/* Last Name */}
+                {/* Contact Person */}
                 <div className="mb-3">
-                  <label htmlFor="lastName" className="form-label fw-medium">
-                    Last Name <span className="text-danger">*</span>
+                  <label htmlFor="personName" className="form-label fw-medium">
+                    Contact Person <span className="text-danger">*</span>
                   </label>
                   <input
                     type="text"
-                    className={`form-control ${formErrors.lastName ? 'is-invalid' : ''}`}
-                    id="lastName"
-                    placeholder="Last Name"
-                    value={formData.lastName}
+                    className={`form-control ${
+                      formErrors.personName ? "is-invalid" : ""
+                    }`}
+                    id="personName"
+                    placeholder="Your Name"
+                    value={formData.personName}
                     onChange={handleInputChange}
                   />
-                  {formErrors.lastName && (
-                    <div className="invalid-feedback">{formErrors.lastName}</div>
+                  {formErrors.personName && (
+                    <div className="invalid-feedback">
+                      {formErrors.personName}
+                    </div>
                   )}
                 </div>
 
@@ -517,32 +490,43 @@ const StudioBooking = () => {
                   </label>
                   <input
                     type="tel"
-                    className={`form-control ${formErrors.phoneNumber ? 'is-invalid' : ''}`}
+                    className={`form-control ${
+                      formErrors.phoneNumber ? "is-invalid" : ""
+                    }`}
                     id="phoneNumber"
                     placeholder="9999999999"
                     value={formData.phoneNumber}
                     onChange={handleInputChange}
                   />
                   {formErrors.phoneNumber && (
-                    <div className="invalid-feedback">{formErrors.phoneNumber}</div>
+                    <div className="invalid-feedback">
+                      {formErrors.phoneNumber}
+                    </div>
                   )}
                 </div>
 
                 {/* Email Address */}
                 <div className="mb-3">
-                  <label htmlFor="emailAddress" className="form-label fw-medium">
+                  <label
+                    htmlFor="emailAddress"
+                    className="form-label fw-medium"
+                  >
                     Email Address <span className="text-danger">*</span>
                   </label>
                   <input
                     type="email"
-                    className={`form-control ${formErrors.emailAddress ? 'is-invalid' : ''}`}
+                    className={`form-control ${
+                      formErrors.emailAddress ? "is-invalid" : ""
+                    }`}
                     id="emailAddress"
                     placeholder="example@gmail.com"
                     value={formData.emailAddress}
                     onChange={handleInputChange}
                   />
                   {formErrors.emailAddress && (
-                    <div className="invalid-feedback">{formErrors.emailAddress}</div>
+                    <div className="invalid-feedback">
+                      {formErrors.emailAddress}
+                    </div>
                   )}
                 </div>
 
@@ -551,10 +535,10 @@ const StudioBooking = () => {
                   <label htmlFor="gst" className="form-label fw-medium">
                     GST Number
                   </label>
-                  <input 
-                    type="text" 
-                    className="form-control" 
-                    placeholder="0000000000000" 
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="0000000000000"
                     id="gst"
                     value={formData.gst}
                     onChange={handleInputChange}
@@ -567,13 +551,18 @@ const StudioBooking = () => {
                     Upload GST Certificate
                   </label>
                   <div className="input-group">
-                    <input 
-                      type="file" 
-                      className="form-control" 
+                    <input
+                      type="file"
+                      className="form-control"
                       id="gstUpload"
                       onChange={handleFileChange}
                     />
                   </div>
+                  {formData.gstFile && (
+                    <div className="small text-success mt-1">
+                      File uploaded: {formData.gstFile.name}
+                    </div>
+                  )}
                 </div>
 
                 {/* Gov ID Number */}
@@ -581,10 +570,10 @@ const StudioBooking = () => {
                   <label htmlFor="govId" className="form-label fw-medium">
                     Gov ID Number
                   </label>
-                  <input 
-                    type="text" 
-                    className="form-control" 
-                    placeholder="0000000000000" 
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="0000000000000"
                     id="govId"
                     value={formData.govId}
                     onChange={handleInputChange}
@@ -604,6 +593,11 @@ const StudioBooking = () => {
                       onChange={handleFileChange}
                     />
                   </div>
+                  {formData.govIdFile && (
+                    <div className="small text-success mt-1">
+                      File uploaded: {formData.govIdFile.name}
+                    </div>
+                  )}
                 </div>
 
                 {/* Form success message */}
@@ -636,10 +630,16 @@ const StudioBooking = () => {
                   >
                     {isSubmitting ? (
                       <>
-                        <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                        <span
+                          className="spinner-border spinner-border-sm me-2"
+                          role="status"
+                          aria-hidden="true"
+                        ></span>
                         Processing...
                       </>
-                    ) : 'Confirm & Pay'}
+                    ) : (
+                      "Confirm & Pay"
+                    )}
                   </button>
                 </div>
               </form>
@@ -648,115 +648,39 @@ const StudioBooking = () => {
         </div>
 
         {/* Right Column - Studio Info and Photos */}
-        <div className="col-lg-8 order-lg-2 order-1">
-          {/* Studio Image and Info */}
-          <div
-            className="card position-relative overflow-hidden mb-4 mb-lg-5"
-            style={{ maxHeight: "500px" }}
-          >
-            {/* Image */}
-            <img
-              src={studio1}
-              alt="Recording Studio"
-              className="w-100 h-100 object-fit-cover"
-              style={{ maxHeight: "300px", minHeight: "200px" }}
-            />
-
-            {/* Title Overlay */}
-            <div
-              className="position-absolute text-white text-center"
-              style={{
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                width: "100%",
-              }}
-            >
-              <h1 className="display-4 fw-bold mb-0 mb-md-2">Recording Studio</h1>
-              {/* <h1 className="display-4 fw-bold">Studio</h1> */}
-            </div>
-
-            {/* Booking Info Panel */}
-            <div
-              className="position-absolute bg-white rounded-4 shadow p-1 p-md-2 d-flex flex-wrap justify-content-center align-items-center"
-              style={{
-                bottom: "2px",
-                left: "50%",
-                transform: "translateX(-50%)",
-                width: "90%",
-                maxWidth: "max-content",
-                gap: "8px 5px",
-              }}
-            >
-              <div className="px-2 px-md-3 py-1 py-md-2 border rounded-3 d-flex align-items-center gap-2">
-                <span className=" fs-6  border-end pe-2">8,000</span>
-                <span className="text-muted">₹</span>
-              </div>
-
-              <div className="px-2 px-md-3 py-1 py-md-2 border rounded-3 d-flex align-items-center gap-2">
-                <span className="fs-6 border-end pe-2">120 m²</span>
-                <Camera size={18} />
-              </div>
-
-              <div className="px-2 px-md-3 py-1 py-md-2 border rounded-3 d-flex align-items-center gap-2">
-                <span className="fs-6 border-end pe-2">Mumbai, MH</span>
-                <MapPin size={18} />
-              </div>
-
-              <div className="px-2 px-md-3 py-1 py-md-2 border rounded-3 d-flex align-items-center gap-2">
-                <span className="fs-6 border-end pe-2">Setup 2</span>
-                <Camera size={18} />
-              </div>
-            </div>
-          </div>
-
-          {/* Photo Gallery */}
-          <h2 className="fw-bold mb-3 mb-md-4">Photo Gallery</h2>
-
-          <div className="row g-2 g-md-3">
-            <div className="col-md-6">
-              <img
-                src={studio2}
-                alt="Studio Space"
-                className="img-fluid rounded shadow-sm w-100 h-100 object-fit-cover"
-                style={{ minHeight: "200px" }}
-              />
-            </div>
-            <div className="col-md-6">
-              <img
-                src={studio3}
-                alt="Film Set"
-                className="img-fluid rounded shadow-sm w-100 h-100 object-fit-cover"
-                style={{ minHeight: "200px" }}
-              />
-            </div>
-            <div className="col-md-4">
-              <img
-                src={studio4}
-                alt="Studio Equipment"
-                className="img-fluid rounded shadow-sm w-100 h-100 object-fit-cover"
-                style={{ minHeight: "150px" }}
-              />
-            </div>
-            <div className="col-md-4">
-              <img
-                src={studio5}
-                alt="Sound Booth"
-                className="img-fluid rounded shadow-sm w-100 h-100 object-fit-cover"
-                style={{ minHeight: "150px" }}
-              />
-            </div>
-            <div className="col-md-4">
-              <img
-                src={studio6}
-                alt="Control Room"
-                className="img-fluid rounded shadow-sm w-100 h-100 object-fit-cover"
-                style={{ minHeight: "150px" }}
-              />
-            </div>
-          </div>
-        </div>
+        <StudioInfo />
       </div>
+
+      {/* Custom CSS for DatePicker */}
+      <style jsx>{`
+        /* DatePicker custom styles */
+        .react-datepicker-wrapper {
+          width: 100%;
+        }
+
+        .react-datepicker-wrapper .form-control {
+          padding-right: 35px;
+        }
+
+        .calendar-icon {
+          position: absolute;
+          right: 10px;
+          top: 50%;
+          transform: translateY(-50%);
+          pointer-events: none;
+        }
+
+        .partially-booked-date {
+          background-color: rgba(255, 193, 7, 0.2);
+          border-radius: 0.3rem;
+        }
+
+        .fully-booked-date {
+          background-color: rgba(220, 53, 69, 0.2);
+          border-radius: 0.3rem;
+          text-decoration: line-through;
+        }
+      `}</style>
     </div>
   );
 };

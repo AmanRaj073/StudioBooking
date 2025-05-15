@@ -6,8 +6,8 @@ import poster3 from '../assets/aboutUs/post3.jpg';
 const WhatWeOffer = () => {
   const services = [
     { image: poster1, title: "Photography Studio", description: "Professional photography services for all occasions" },
-    { image: poster2, title: "Video Production", description: "High-quality video production and editing" },
-    { image: poster3, title: "Editing Services", description: "Expert photo and video editing" }
+    { image: poster2, title: "Video Shoot", description: "High-quality video production and editing" },
+    { image: poster3, title: "Complete Shooting Solution", description: "Expert photo and video editing" }
   ];
 
   return (

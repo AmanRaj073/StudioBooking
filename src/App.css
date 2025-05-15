@@ -1,4 +1,6 @@
-
+*{
+  font-family: Helvetica, Arial, sans-serif;
+}
 
 /* Carousel */
 @media (max-width: 576px) {
@@ -17,6 +19,7 @@
 
 .social-icons a:hover {
   color: #000; /* Black on hover - change to your brand colors */
+  
 }
 
 /* Specific platform colors on hover (optional) */
@@ -29,6 +32,13 @@
 /* Hero/Upcoming New Update */
 .object-fit-cover {
   object-fit: cover;
+}
+.gallery-card img:hover {
+  transform: scale(1.05);
+}
+
+.text-shadow {
+  text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
 }
 
 .hero-container {

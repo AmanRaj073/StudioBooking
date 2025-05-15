@@ -2,33 +2,55 @@ import React from "react";
 
 const NewUpdate = () => {
   return (
-    <section className="hero-container bg-dark text-white py-5">
-      <div className="container">
-        <div className="text-center">
-          <h2 className="display-4 fw-bold mb-4">New Features Coming Soon</h2>
-          <div className="mx-auto" style={{ maxWidth: "800px" }}>
-            <p className="lead mb-4 px-3 px-md-0">
-              Are you a studio owner looking to list your property for rent?
-              Soon, you'll be able to add your studio to our platform and
-              connect with photographers, filmmakers, and creators in need of a
-              professional space.
-            </p>
-            <p className="mb-4">Stay tuned for updates!</p>
-            <div className="d-flex flex-column flex-md-row justify-content-center align-items-center gap-3 p-3">
-              <p className="mb-3 mb-md-0">Interested? Sign Up</p>
-              <button
-                type="button"
-                className="btn btn-primary rounded-pill px-4 py-2"
-                style={{
-                  fontSize: "clamp(1rem, 3vw, 1.25rem)",
-                  minWidth: "150px",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                Join Waitlist
-              </button>
-            </div>
-          </div>
+    <section
+      className="py-5"
+      style={{
+        background: "linear-gradient(135deg, #1e1e2f, #2b2b45)",
+        color: "#fff",
+        position: "relative",
+      }}
+    >
+      {/* Glow Effect */}
+      <div
+        style={{
+          position: "absolute",
+          top: "20%",
+          left: "50%",
+          transform: "translateX(-50%)",
+          width: "400px",
+          height: "400px",
+          background: "radial-gradient(circle, #7c3aed 0%, transparent 70%)",
+          filter: "blur(80px)",
+          zIndex: 0,
+          opacity: 0.4,
+        }}
+      />
+
+      <div className="container position-relative z-1 text-center">
+        <div
+          className="p-4 px-md-5 rounded-4 shadow mx-auto"
+          style={{
+            background: "rgba(255, 255, 255, 0.05)",
+            backdropFilter: "blur(8px)",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+            maxWidth: "500px",
+          }}
+        >
+          <h3 className="fw-bold mb-2">Marketplace Coming Soon</h3>
+          <p className="text-white-50 mb-3 small">
+          Stay tuned for updates! Interested?
+          </p>
+          <button
+            type="button"
+            className="btn btn-gradient rounded-pill px-4 py-2 text-white"
+            style={{
+              background: "linear-gradient(135deg, #a855f7, #7c3aed)",
+              border: "none",
+              fontSize: "1rem",
+            }}
+          >
+            Join Waitlist
+          </button>
         </div>
       </div>
     </section>
