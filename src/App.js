@@ -8,6 +8,7 @@ import Navbar from './common/Navbar'
 import Footer from './common/Footer'
 import Checkout from './pages/Checkout';
 import Profile from './pages/Profile';
+import BookingConfirmation from './components/BookingConfirmation';
 function App() {
   return (
     <div className="App">
@@ -18,6 +19,7 @@ function App() {
         <Route path="/checkout" element={<Checkout/>} />
         <Route path="/profile" element={<Profile/>} />
         <Route path="/about" element={<About/>} />
+        <Route path="/booking-confirmation" element={<BookingConfirmation/>} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer/>

@@ -88,7 +88,9 @@ const Carousels = () => {
                       style={{
                         fontSize: "clamp(1rem, 3vw, 1.25rem)",
                         minWidth: "150px",
-                        whiteSpace: "nowrap"
+                        whiteSpace: "nowrap",
+                        background:"#7c3aed",
+                        border:"#7c3aed",
                       }}
                     >
                       {slide.buttonText}

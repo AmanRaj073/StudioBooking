@@ -2,13 +2,16 @@ import React from "react";
 import poster1 from '../assets/aboutUs/post1.jpg';
 import poster2 from '../assets/aboutUs/post2.jpg';
 import poster3 from '../assets/aboutUs/post3.jpg';
+import { Navigate, useNavigate } from "react-router-dom";
 
 const WhatWeOffer = () => {
+  const navigate = useNavigate()
   const services = [
     { image: poster1, title: "Photography Studio", description: "Professional photography services for all occasions" },
     { image: poster2, title: "Video Shoot", description: "High-quality video production and editing" },
     { image: poster3, title: "Complete Shooting Solution", description: "Expert photo and video editing" }
   ];
+
 
   return (
     <div className="container py-5">
@@ -16,7 +19,7 @@ const WhatWeOffer = () => {
       
       <div className="row g-4">
         {services.map((service, index) => (
-          <div key={index} className="col-12 col-md-6 col-lg-4">
+          <div onClick={()=> navigate("/booking")} style={{cursor:"pointer"}} key={index}  className="col-12 col-md-6 col-lg-4">
             <div className="card h-100 shadow border-0">
              
               <div className="card-body">

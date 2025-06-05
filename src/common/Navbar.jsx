@@ -43,8 +43,8 @@ const Navbar = () => {
           id="navbarNav"
         >
           <ul className="navbar-nav ms-auto me-3 mb-2 mb-lg-0">
-            {["/", "/studio", "/booking", "/contact-us"].map((path, index) => {
-              const names = ["Home", "Studio", "Booking", "Contact Us"];
+            {["/", "/booking"].map((path, index) => {
+              const names = ["Home", "Booking"];
               return (
                 <li className="nav-item" key={path}>
                   <NavLink
@@ -69,6 +69,10 @@ const Navbar = () => {
               type="button"
               className="btn btn-primary rounded-pill px-3 me-3"
               onClick={() => navigate('/booking')}
+              style={{
+                background:"#7c3aed",
+                border:"#7c3aed"
+              }}
             >
               Book Now
             </button>

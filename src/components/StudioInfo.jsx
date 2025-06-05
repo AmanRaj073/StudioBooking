@@ -1,28 +1,47 @@
-import React from "react";
+import React, { useState } from "react";
 import studio1 from "../assets/Studio1/Studio (1).jpeg";
 import studio2 from "../assets/Studio1/Studio (2).jpeg";
 import studio3 from "../assets/Studio1/Studio (3).png";
 import studio4 from "../assets/Studio1/Studio (4).png";
 import studio5 from "../assets/Studio1/Studio (5).png";
 import studio6 from "../assets/Studio1/Studio (6).png";
-import studio7 from "../assets/Studio1/Studio (7).png";
+import studio7 from "../assets/Studio1/Studio (7).png"; // Podcast image
 import studio8 from "../assets/Studio1/Studio (8).png";
+import studio9 from "../assets/Studio1/Studio (9).png";
+import studio10 from "../assets/Studio1/Studio (10).png";
+import studio11 from "../assets/Studio1/Studio (11).png";
+import studio12 from "../assets/Studio1/Studio (12).png";
+import studio13 from "../assets/Studio1/Studio (13).png";
+import studio14 from "../assets/Studio1/Studio (14).png";
+import studio15 from "../assets/Studio1/Studio (15).png";
+import studio16 from "../assets/Studio1/Studio (16).png";
+import studio17 from "../assets/Studio1/Studio (17).png";
 import studio18 from "../assets/Studio1/Studio (18).png";
 
-import { MapPin, Camera } from "lucide-react";
-
 const StudioInfo = () => {
-  const livingRoom = [
-    { src: studio2, label: "Room 1 View" },
-    { src: studio3, label: "Room 2 View" },
+  const [modalImage, setModalImage] = useState(null);
+
+  const podcastRooms = [
+    { src: studio7, label: "Podcast Room 1" },
+    { src: studio6, label: "Podcast Room 2" },
+    { src: studio8, label: "Podcast Room 3" },
   ];
 
-  const room = [
-    { src: studio4, label: "Room 3 View" },
-    { src: studio5, label: "Room 4 View" },
-    { src: studio6, label: "Room 5 View" },
-    { src: studio7, label: "Room 6 View" },
-    { src: studio8, label: "Room 7 View" },
+  const roomImages = [
+    { src: studio1, label: "Room 1" },
+    { src: studio2, label: "Room 2" },
+    { src: studio3, label: "Room 3" },
+    { src: studio4, label: "Room 4" },
+    { src: studio5, label: "Room 5" },
+    { src: studio9, label: "Room 6" },
+    { src: studio10, label: "Room 7" },
+    { src: studio11, label: "Room 8" },
+    { src: studio12, label: "Room 9" },
+    { src: studio13, label: "Room 10" },
+    { src: studio14, label: "Room 11" },
+    { src: studio15, label: "Room 12" },
+    { src: studio16, label: "Room 13" },
+    { src: studio17, label: "Room 14" },
   ];
 
   const renderGallerySection = (title, items) => (
@@ -33,11 +52,17 @@ const StudioInfo = () => {
       <div className="row g-4">
         {items.map((item, idx) => (
           <div className="col-12 col-md-6 col-lg-4" key={idx}>
-            <div className="gallery-card position-relative overflow-hidden rounded-4 shadow-sm">
+            <div
+              className="gallery-card position-relative overflow-hidden rounded-4 shadow-sm"
+              onClick={() => setModalImage(item.src)}
+              style={{
+                cursor: "zoom-in",
+              }}
+            >
               <img
                 src={item.src}
                 alt={item.label}
-                className="img-fluid w-100"
+                className="img-fluid w-100 gallery-image"
                 style={{
                   aspectRatio: "4/3",
                   objectFit: "cover",
@@ -56,53 +81,59 @@ const StudioInfo = () => {
 
   return (
     <div className="col-lg-8 order-lg-2 order-1">
+      <div className="w-100">
+        <h3 className="fw-bold mb-4 text-uppercase border-start border-4 ps-3 border-primary">
+          Recording Studio
+        </h3>
+      </div>
+
       {/* Studio Banner */}
-      <div className="card border-0 shadow rounded-3 mb-5 position-relative overflow-hidden">
+      <div className="card border-0 shadow rounded-3 mb-3 position-relative overflow-hidden">
         <img
           src={studio18}
           alt="Recording Studio"
           className="w-100"
           style={{
-            height: "320px",
-            objectFit: "cover",
+            height: "auto",
+            objectFit: "fill",
             borderRadius: "1rem",
           }}
         />
-        <div
-          className="position-absolute w-100 text-center text-white"
-          style={{
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-          }}
-        >
-          <h1 className="display-5 fw-bold bg-dark bg-opacity-50 px-4 py-2 rounded-3 d-inline-block text-shadow">
-            Recording Studio
-          </h1>
-        </div>
-
-        {/* Booking Info */}
-        <div className="bg-white shadow rounded-4 px-4 py-3 d-flex flex-wrap justify-content-center align-items-center gap-3 mt-3">
-          {[
-            { label: "₹ 8,000" },
-            { label: "120 m²", icon: <Camera size={16} /> },
-            { label: "Mumbai, MH", icon: <MapPin size={16} /> },
-            { label: "Setup 2", icon: <Camera size={16} /> },
-          ].map((item, index) => (
-            <div
-              key={index}
-              className="d-flex align-items-center border rounded-pill px-3 py-1 bg-light"
-            >
-              <span className="me-2 small fw-medium">{item.label}</span>
-              {item.icon}
-            </div>
-          ))}
-        </div>
       </div>
 
-      {/* Classy Gallery */}
-      {renderGallerySection("Living Room", livingRoom)}
-      {renderGallerySection("Rooms", room)}
+      {/* Gallery Sections */}
+      {renderGallerySection("Podcast Rooms", podcastRooms)}
+      {renderGallerySection("Rooms", roomImages)}
+
+      {/* Modal */}
+      {modalImage && (
+        <div
+          className="modal fade show d-block"
+          style={{
+            backgroundColor: "rgba(0,0,0,0.8)",
+            zIndex: 9999,
+          }}
+          onClick={() => setModalImage(null)}
+        >
+          <div className="d-flex justify-content-center align-items-center vh-100">
+            <img
+              src={modalImage}
+              alt="Zoomed"
+              className="img-fluid rounded-4 shadow-lg"
+              style={{ maxHeight: "90vh", maxWidth: "90vw" }}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Hover Zoom Effect */}
+      <style>
+        {`
+          .gallery-card:hover .gallery-image {
+            transform: scale(1.05);
+          }
+        `}
+      </style>
     </div>
   );
 };
