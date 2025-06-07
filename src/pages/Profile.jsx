@@ -1,138 +1,148 @@
-import { useState } from 'react';
-import { Eye, Trash2, FileText } from 'lucide-react';
-import profile from '../assets/profile.png';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function Profile() {
-  const [upcoming, setUpcoming] = useState([
-    {
-      id: 1,
-      studio: 'Studio A',
-      address: '123 Creative Lane, Studio District, Mumbai, Maharashtra 400050, India',
-      date: '21 - April - 2025',
-      days: '3 shoot +2 setup',
-      total: '₹18,000',
-      status: 'Paid',
-    },
-  ]);
+  const [user, setUser] = useState(null);
+  const [history, setHistory] = useState([]);
 
-  const [history, setHistory] = useState([
-    {
-      id: 2,
-      studio: 'Studio B',
-      address: '456 Creative Lane, Studio District, Mumbai, Maharashtra 400050, India',
-      date: '28 - March - 2025',
-      days: '2 shoot +1 setup',
-      total: '₹20,000',
-      status: 'Completed',
-    },
-  ]);
+  useEffect(() => {
+    // Load user from localStorage
+    const userData = localStorage.getItem("user");
+    if (userData) {
+      try {
+        const parsedUser = JSON.parse(userData);
+        setUser({ name: parsedUser.name, email: parsedUser.email });
+      } catch (error) {
+        console.error("Error parsing user data:", error);
+      }
+    }
 
-  const handleDelete = (id, type) => {
-    if (type === 'upcoming') setUpcoming(upcoming.filter(b => b.id !== id));
-    else setHistory(history.filter(b => b.id !== id));
+    // Fetch booking history
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await axios.get(
+          `${process.env.REACT_APP_API}/my-bookings`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        setHistory(res.data || []);
+        console.log(res.data);
+      } catch (err) {
+        console.error("Error fetching profile:", err);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const formatDate = (dateStr) => {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString("en-IN", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
   };
 
   return (
-    <div className="container-fluid p-3 p-md-5">
-      {/* Profile Header */}
-      <div className="row mb-4">
-        <div className="col-12 col-md-6 d-flex mb-3 mb-md-0">
-          <img src={profile} alt="Profile" className="rounded-circle me-3" style={{ width: '100px', height: '100px' }} />
-          <div>
-            <h2 className="fw-bold mb-1">Rahul Mehra</h2>
-            <p className="text-muted mb-1">rahul.mehra@gmail.com</p>
-            <p className="text-muted mb-0">+91 98765 43210</p>
-          </div>
-        </div>
-        <div className="col-12 col-md-6">
-          <div className="d-flex flex-column gap-2 align-items-start align-items-md-end">
-            <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-2">
-              <div><span className="text-muted me-1">GST No.:</span>0000000000</div>
-              <button className="btn btn-primary d-flex align-items-center gap-1 px-2 px-md-3">
-                <Eye size={16} /> <span className="d-none d-sm-inline">View Document</span>
-              </button>
-            </div>
-            <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-2">
-              <div><span className="text-muted me-1">GOV ID.:</span>ABCXY000000</div>
-              <button className="btn btn-primary d-flex align-items-center gap-1 px-2 px-md-3">
-                <Eye size={16} /> <span className="d-none d-sm-inline">View Document</span>
-              </button>
+    <div className="container py-5">
+      <div className="row justify-content-center">
+        <div className="col-lg-8">
+          {/* Profile Card */}
+          <div className="card shadow-sm border-0 mb-4">
+            <div className="card-body d-flex flex-column flex-md-row align-items-center text-center text-md-start">
+              <div
+                className="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white"
+                style={{ width: "100px", height: "100px", fontSize: "40px" }}
+              >
+                <i className="bi bi-person-fill"></i>
+              </div>
+              <div className="ms-md-4 mt-3 mt-md-0">
+                <h4 className="fw-bold mb-1">{user?.name || "User Name"}</h4>
+                <p className="text-muted mb-0">
+                  {user?.email || "user@example.com"}
+                </p>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* Upcoming Bookings */}
-      <hr className="my-4" />
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <h4 className="fw-bold">Upcoming Bookings</h4>
-        <a href="#" className="text-primary text-decoration-none">View more</a>
-      </div>
-      {upcoming.map(booking => (
-        <div key={booking.id} className="card mb-3 bg-light border-0">
-          <div className="card-body">
-            <div className="row">
-              <div className="col-12 col-md-8">
-                <div className="mb-2"><strong>Studio:</strong> {booking.studio}</div>
-                <div className="mb-2"><strong>Address:</strong> {booking.address}</div>
-                <div className="mb-2"><strong>Date:</strong> {booking.date}</div>
-                <div className="mb-2"><strong>Days:</strong> {booking.days}</div>
-              </div>
-              <div className="col-12 col-md-4 text-start text-md-end mt-3 mt-md-0">
-                <div className="mb-2"><strong>Total:</strong> {booking.total}</div>
-                <div className="mb-3"><strong>Status:</strong> {booking.status}</div>
-                <div className="d-flex flex-wrap justify-content-start justify-content-md-end gap-2">
-                  <button className="btn btn-primary d-flex align-items-center gap-1 px-3">
-                    <FileText size={16} /> Invoice
-                  </button>
-                  <button
-                    className="btn btn-danger d-flex align-items-center gap-1 px-3"
-                    onClick={() => handleDelete(booking.id, 'upcoming')}
-                  >
-                    <Trash2 size={16} /> Delete
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      ))}
+          {/* Booking History Section */}
+          <hr className="my-4" />
+          <h4 className="fw-bold mb-4">Booking History</h4>
 
-      {/* Booking History */}
-      <hr className="my-4" />
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <h4 className="fw-bold">Booking History</h4>
-        <a href="#" className="text-primary text-decoration-none">View more</a>
-      </div>
-      {history.map(booking => (
-        <div key={booking.id} className="card mb-3 bg-light border-0">
-          <div className="card-body">
-            <div className="row">
-              <div className="col-12 col-md-8">
-                <div className="mb-2"><strong>Studio:</strong> {booking.studio}</div>
-                <div className="mb-2"><strong>Address:</strong> {booking.address}</div>
-                <div className="mb-2"><strong>Date:</strong> {booking.date}</div>
-                <div className="mb-2"><strong>Days:</strong> {booking.days}</div>
-              </div>
-              <div className="col-12 col-md-4 text-start text-md-end mt-3 mt-md-0">
-                <div className="mb-2"><strong>Total:</strong> {booking.total}</div>
-                <div className="mb-3"><strong>Status:</strong> {booking.status}</div>
-                <div className="d-flex flex-wrap justify-content-start justify-content-md-end gap-2">
-                  <button className="btn btn-primary d-flex align-items-center gap-1 px-3">
-                    <Eye size={16} /> View Details
-                  </button>
-                  <button
-                    className="btn btn-danger d-flex align-items-center gap-1 px-3"
-                    onClick={() => handleDelete(booking.id, 'history')}
-                  >
-                    <Trash2 size={16} /> Delete
-                  </button>
-                </div>
-              </div>
+          {history.length === 0 ? (
+            <div className="text-muted">No booking history found.</div>
+          ) : (
+            <div className="row g-4">
+              {history.map((booking) => {
+                const f = booking.formData || {};
+                const u = booking.userId || {};
+                return (
+                  <div key={booking._id} className="col-12">
+                    <div className="card shadow-sm border-0">
+                      <div className="card-body">
+                        {/* Top Section */}
+                        <div className="d-flex justify-content-between flex-wrap mb-3">
+                          <div className="mb-2 mb-md-0">
+                            <h5 className="fw-semibold mb-1">
+                              {f.productionName || "Unnamed Production"}
+                            </h5>
+                            <div className="text-muted small">
+                              <i className="bi bi-person-circle me-1"></i>
+                              {u.name || "NA"}&nbsp;|&nbsp;
+                              <i className="bi bi-envelope-fill me-1"></i>
+                              {u.email || "NA"}
+                            </div>
+                          </div>
+                          <div className="text-end d-flex flex-wrap justify-content-end gap-2">
+                            <span className="badge bg-warning theme text-white p-3">
+                              {formatDate(f.date)}
+                            </span>
+                            <span className="badge bg-success theme text-white p-3">
+                              {f.time || "NA"}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Details */}
+                        <div className="row g-3">
+                          <div className="col-12 col-md-4">
+                            <strong>Phone:</strong>
+                            <br />
+                            {f.phoneNumber || "NA"}
+                          </div>
+                          <div className="col-12 col-md-4">
+                            <strong>Shooting Days:</strong>
+                            <br />
+                            {f.shootingDays || "NA"}
+                          </div>
+                          <div className="col-12 col-md-4">
+                            <strong>Pre-Setup Days:</strong>
+                            <br />
+                            {f.preSetupDays || "NA"}
+                          </div>
+                          <div className="col-12 col-md-4">
+                            <strong>Dismantle Days:</strong>
+                            <br />
+                            {f.dismantalDays || "NA"}
+                          </div>
+                          <div className="col-12 col-md-8">
+                            <strong>Additional Notes:</strong>
+                            <br />
+                            {f.additionalNote || "None"}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
-          </div>
+          )}
         </div>
-      ))}
+      </div>
     </div>
   );
 }

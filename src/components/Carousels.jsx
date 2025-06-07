@@ -63,7 +63,7 @@ const Carousels = () => {
                   <h2
                     className="fw-bold mb-3 text-center heading-text"
                     style={{
-                      fontSize: "clamp(1.75rem, 6vw, 3rem)",
+                      fontSize: "clamp(1.75rem, 6vw, 4rem)",
                       lineHeight: "1.2",
                       textShadow: "1px 1px 3px rgba(0,0,0,0.5)"
                     }}
@@ -73,7 +73,7 @@ const Carousels = () => {
                   <p
                     className="text-center mb-4 subheading-text"
                     style={{
-                      fontSize: "clamp(1rem, 3vw, 1.25rem)",
+                      fontSize: "clamp(1rem, 3vw, 1.5rem)",
                       lineHeight: "1.4",
                       textShadow: "1px 1px 2px rgba(0,0,0,0.5)"
                     }}
@@ -82,7 +82,7 @@ const Carousels = () => {
                   </p>
                   <div className="text-center">
                     <Link to={'/booking'}>
-                    <button
+                    {/* <button
                       type="button"
                       className="btn btn-primary rounded-pill px-4 py-2"
                       style={{
@@ -94,7 +94,7 @@ const Carousels = () => {
                       }}
                     >
                       {slide.buttonText}
-                    </button>
+                    </button> */}
                     </Link>
                   </div>
                 </div>

@@ -43,8 +43,8 @@ const Navbar = () => {
           id="navbarNav"
         >
           <ul className="navbar-nav ms-auto me-3 mb-2 mb-lg-0">
-            {["/", "/booking"].map((path, index) => {
-              const names = ["Home", "Booking"];
+            {["/"].map((path, index) => {
+              const names = ["Home"];
               return (
                 <li className="nav-item" key={path}>
                   <NavLink

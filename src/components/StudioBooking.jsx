@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import StudioInfo from "./StudioInfo";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import LoginRegisterModal from "../Modal/LoginRegister";
 
 // Mock data for booked time slots
 const MOCK_BOOKED_SLOTS = {
@@ -36,12 +37,21 @@ const StudioBooking = () => {
     govId: "",
     govIdFile: null,
   });
+  const [show, setShow] = useState(false);
 
   const [selectedDateObj, setSelectedDateObj] = useState(null);
   const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
   const [formErrors, setFormErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
+
+  useEffect(() => {
+    let token = localStorage.getItem("token");
+
+    if (!token) {
+      setShow(true);
+    }
+  }, []);
 
   // Update available time slots when date changes
   useEffect(() => {
@@ -175,9 +185,13 @@ const StudioBooking = () => {
           form.append(key, formData[key]);
         }
       }
+      const userId = localStorage.getItem("userId");
+      if (userId) {
+        form.append("userId", userId);
+      }
 
       const response = await axios.post(
-        "https://studio-booking-backend-leti.vercel.app/submit-form",
+        `${process.env.REACT_APP_API}/submit-form`,
         form,
         {
           headers: {
@@ -186,7 +200,6 @@ const StudioBooking = () => {
         }
       );
 
-      console.log("Form submitted:", response.data);
       setFormSubmitted(true);
       const queryParams = new URLSearchParams({
         date: formData.date,
@@ -202,8 +215,7 @@ const StudioBooking = () => {
       });
 
       navigate(`/booking-confirmation?${queryParams.toString()}`);
-      localStorage.setItem("order",formData)
-
+      localStorage.setItem("order", formData);
     } catch (error) {
       console.error("Error submitting form:", error);
       alert("Failed to submit form, please try again.");
@@ -277,6 +289,7 @@ const StudioBooking = () => {
 
   return (
     <>
+      <LoginRegisterModal show={show} onHide={() => setShow(false)} />
       {/* Header with back button */}
       <div className="d-flex align-items-center px-2 px-md-4 mt-3 mb-4">
         <button className="btn btn-link p-0 me-2">
@@ -284,7 +297,6 @@ const StudioBooking = () => {
         </button>
         <h1 className="mb-0 fw-bold">Information Page</h1>
       </div>
-
       <div className="container-fluid px-3 px-md-5 ">
         <div className="row">
           {/* Right Column - Studio Info and Photos */}
@@ -310,7 +322,7 @@ const StudioBooking = () => {
                         {...datePickerCustomStyles}
                       />
                       <div className="calendar-icon">
-                        <Calendar size={18} className="text-muted" />
+                       {!formErrors.date && <Calendar size={18} className="text-muted" />}
                       </div>
                       {formErrors.date && (
                         <div
