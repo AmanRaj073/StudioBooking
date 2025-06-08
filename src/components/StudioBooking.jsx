@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { Calendar, Clock, AlertCircle, ChevronLeft } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
@@ -38,7 +38,7 @@ const StudioBooking = () => {
     govIdFile: null,
   });
   const [show, setShow] = useState(false);
-
+  const studioInfoRef = useRef(null);
   const [selectedDateObj, setSelectedDateObj] = useState(null);
   const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
   const [formErrors, setFormErrors] = useState({});
@@ -291,11 +291,24 @@ const StudioBooking = () => {
     <>
       <LoginRegisterModal show={show} onHide={() => setShow(false)} />
       {/* Header with back button */}
-      <div className="d-flex align-items-center px-2 px-md-4 mt-3 mb-4">
-        <button className="btn btn-link p-0 me-2">
+      {/* Header with back button - Desktop only */}
+      <div className="d-none d-lg-flex align-items-center px-2 px-md-4 mt-3 mb-4">
+        {/* <button className="btn btn-link p-0 me-2">
           <ChevronLeft size={50} opacity={1} onClick={() => navigate("/")} />
         </button>
-        <h1 className="mb-0 fw-bold">Information Page</h1>
+        <h1 className="mb-0 fw-bold">Information Page</h1> */}
+      </div>
+
+      {/* Mobile Continue Shopping Button */}
+      <div className="d-lg-none px-3 mt-3 mb-4">
+        <button
+          className="btn btn-primary w-100 rounded-pill py-2"
+          onClick={() =>
+            studioInfoRef.current?.scrollIntoView({ behavior: "smooth" })
+          }
+        >
+          Continue Booking
+        </button>
       </div>
       <div className="container-fluid px-3 px-md-5 ">
         <div className="row">
@@ -303,7 +316,7 @@ const StudioBooking = () => {
           <StudioInfo />
 
           {/* Left Column - Booking Form */}
-          <div className="col-lg-4 order-lg-1 order-2 mt-4 mt-lg-0">
+          <div ref={studioInfoRef} className="col-lg-4 order-lg-1 order-2 mt-4 mt-lg-0">
             <div className="card shadow-sm mb-4">
               <div className="card-body">
                 <h4 className="mb-4">Booking Details</h4>
@@ -322,7 +335,9 @@ const StudioBooking = () => {
                         {...datePickerCustomStyles}
                       />
                       <div className="calendar-icon">
-                       {!formErrors.date && <Calendar size={18} className="text-muted" />}
+                        {!formErrors.date && (
+                          <Calendar size={18} className="text-muted" />
+                        )}
                       </div>
                       {formErrors.date && (
                         <div

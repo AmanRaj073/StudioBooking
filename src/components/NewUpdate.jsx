@@ -44,7 +44,7 @@ const NewUpdate = () => {
             type="button"
             className="btn btn-gradient rounded-pill px-4 py-2 text-white"
             style={{
-              background: "linear-gradient(135deg, #a855f7, #7c3aed)",
+              background: "linear-gradient(135deg,rgb(175, 177, 123),rgb(237, 222, 58))",
               border: "none",
               fontSize: "1rem",
             }}
