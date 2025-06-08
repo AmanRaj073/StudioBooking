@@ -316,7 +316,10 @@ const StudioBooking = () => {
           <StudioInfo />
 
           {/* Left Column - Booking Form */}
-          <div ref={studioInfoRef} className="col-lg-4 order-lg-1 order-2 mt-4 mt-lg-0">
+          <div
+            ref={studioInfoRef}
+            className="col-lg-4 order-lg-1 order-2 mt-4 mt-lg-0"
+          >
             <div className="card shadow-sm mb-4">
               <div className="card-body">
                 <h4 className="mb-4">Booking Details</h4>
@@ -684,23 +687,23 @@ const StudioBooking = () => {
                   )}
 
                   {/* Action Buttons */}
-                  <div className="d-flex flex-column flex-sm-row justify-content-end gap-3 mt-4">
+                  <div className="d-flex flex-wrap justify-content-end gap-2 mt-4">
                     <button
                       type="button"
-                      className="btn btn-outline-primary rounded-pill px-4 py-2 flex-grow-1 flex-sm-grow-0"
+                      className="btn btn-outline-primary rounded-pill px-3 py-2"
                       style={{
-                        fontSize: "clamp(1rem, 3vw, 1.25rem)",
-                        minWidth: "150px",
+                        fontSize: "clamp(0.9rem, 2vw, 1.1rem)",
+                        minWidth: "120px",
                       }}
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
-                      className="btn btn-primary rounded-pill px-4 py-2 flex-grow-1 flex-sm-grow-0"
+                      className="btn btn-primary rounded-pill px-3 py-2"
                       style={{
-                        fontSize: "clamp(1rem, 3vw, 1.25rem)",
-                        minWidth: "150px",
+                        fontSize: "clamp(0.9rem, 2vw, 1.1rem)",
+                        minWidth: "120px",
                       }}
                       disabled={isSubmitting}
                     >

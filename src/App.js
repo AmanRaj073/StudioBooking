@@ -11,7 +11,7 @@ import Profile from './pages/Profile';
 import BookingConfirmation from './components/BookingConfirmation';
 function App() {
   return (
-    <div className="App">
+    <div className="App container">
       <Navbar/>
       <Routes>
         <Route path="/" element={<Home/>} />

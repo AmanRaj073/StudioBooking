@@ -303,7 +303,7 @@ export default function LoginRegisterModal({ show, onHide }) {
           </div>
 
           {/* Additional links */}
-          {isLogin && (
+          {/* {isLogin && (
             <div className="text-center">
               <a 
                 href="#" 
@@ -314,7 +314,7 @@ export default function LoginRegisterModal({ show, onHide }) {
                 Forgot your password?
               </a>
             </div>
-          )}
+          )} */}
         </Form>
       </Modal.Body>
 

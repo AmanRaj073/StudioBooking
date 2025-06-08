@@ -3,7 +3,7 @@ import StudioBooking from '../components/StudioBooking'
 
 const Information = () => {
   return (
-    <div>
+    <div className=''>
       <StudioBooking/>
     </div>
   )
