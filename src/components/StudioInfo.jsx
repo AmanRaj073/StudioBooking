@@ -192,7 +192,7 @@ const StudioInfo = () => {
             alt={item.label}
             className="card-img-top studio-image"
             style={{
-              height: "120px",
+              height: "200px",
               objectFit: "cover",
               cursor: "zoom-in",
               transition: "all 0.4s ease",

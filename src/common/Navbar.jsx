@@ -53,7 +53,7 @@ const Navbar = () => {
               onClick={() => navigate('/booking')}
               style={{
                 // background:"#7c3aed",
-                border:"#7c3aed",
+                // border:"#7c3aed",
                 fontWeight:600,
               }}
             >
@@ -76,12 +76,13 @@ const Navbar = () => {
         <div className="d-flex align-items-center d-lg-none">
           <button
             type="button"
-            className="btn btn-primary rounded-pill px-3 me-3"
+            className="btn btn-warning text-white rounded-pill px-3 me-3"
             onClick={() => navigate('/booking')}
             style={{
-              background:"#7c3aed",
-              border:"#7c3aed",
-              fontSize: "14px"
+              // background:"#7c3aed",
+              // border:"#7c3aed",
+              fontSize: "14px",
+              fontWeight:600,
             }}
           >
             Book Now
