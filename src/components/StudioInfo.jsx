@@ -199,23 +199,7 @@ const StudioInfo = () => {
             }}
             onClick={() => setModalImage(item.src)}
           />
-          {/* <div className="position-absolute top-0 end-0 m-3">
-            <span className="badge bg-primary bg-opacity-90 px-3 py-2">
-              {item.capacity}
-            </span>
-          </div> */}
         </div>
-        {/* <div className="card-body p-4 py-2">
-          <h5 className="card-title text-dark mb-2">{item.label}</h5>
-          <p className="card-text text-muted mb-3" style={{ fontSize: "0.95rem" }}>
-            {item.description}
-          </p>
-          <div className="border-top pt-3">
-            <small className="text-muted d-block">
-              <strong>Equipment:</strong> {item.equipment}
-            </small>
-          </div>
-        </div> */}
       </div>
     </div>
   );
@@ -239,7 +223,15 @@ const StudioInfo = () => {
               </p>
             </div>
             <div className="position-absolute bottom-0 end-0 p-4 d-none d-md-block">
-              <span className="badge bg-success fs-6 px-3 py-2">
+              <span
+                className="badge fs-6 px-4 py-2 text-white"
+                style={{
+                  backgroundColor: "#28a745", // Bright red-pink
+                  borderRadius: "30px",
+                  fontWeight: "500",
+                  fontSize: "1rem",
+                }}
+              >
                 Available Now
               </span>
             </div>
@@ -249,17 +241,6 @@ const StudioInfo = () => {
 
       {/* Navigation Tabs */}
       <ul className="nav nav-pills nav-fill mb-4 bg-light rounded-3 p-2">
-        <li className="nav-item">
-          <button
-            className={`nav-link rounded-2 fw-semibold ${
-              activeTab === "overview" ? "active" : "text-muted"
-            }`}
-            onClick={() => setActiveTab("overview")}
-          >
-            Overview
-          </button>
-        </li>
-
         <li className="nav-item">
           <button
             className={`nav-link rounded-2 fw-semibold ${
