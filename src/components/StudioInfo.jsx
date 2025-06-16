@@ -20,11 +20,11 @@ import studio18 from "../assets/Studio1/Studio (18).png";
 
 const StudioInfo = () => {
   const [modalImage, setModalImage] = useState(null);
-  const [activeTab, setActiveTab] = useState("overview");
+  const [activeTab, setActiveTab] = useState("recording");
 
   const podcastRooms = [
     {
-      src: studio7,
+      src: studio9,
       label: "Podcast Room 1",
       description: "Professional podcast recording with advanced acoustics",
       capacity: "2-4 people",
@@ -85,7 +85,7 @@ const StudioInfo = () => {
       equipment: "Condenser microphones, Tube preamps, Mastering suite",
     },
     {
-      src: studio9,
+      src: studio7,
       label: "Room 6",
       description: "Versatile space for music production and mixing",
       capacity: "3-5 people",
